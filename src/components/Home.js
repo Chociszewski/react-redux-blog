@@ -1,25 +1,17 @@
 import React, { Component } from "react";
-import axios from "axios";
-
-import _ from "lodash";
+import { connect } from "react-redux";
+import * as actions from "../actions/index.js";
 
 class Home extends Component {
-  state = {
-    posts: []
-  };
-
   componentDidMount() {
-    axios.get("https://jsonplaceholder.typicode.com/posts").then(res => {
-      const posts = res.data;
-      this.setState({ posts });
-    });
+    this.props.fetchComments();
   }
 
-  takeTen() {
-    let postsTen = this.state.posts.map(post => {
+  showPosts() {
+    return this.props.posts.map(post => {
       return (
         <li key={post.title}>
-          <h2>{post.title}</h2>
+          {post.title}
           <p>{post.body}</p>
         </li>
       );
@@ -29,12 +21,16 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <div>
-          <ul>{this.takeTen()}</ul>
-        </div>
+        <ul>{this.showPosts()}</ul>
       </div>
     );
   }
 }
 
-export default Home;
+function mapStateToProps(state) {
+  return { posts: state.posts };
+}
+export default connect(
+  mapStateToProps,
+  actions
+)(Home);
